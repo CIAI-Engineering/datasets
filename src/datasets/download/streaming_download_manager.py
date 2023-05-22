@@ -274,7 +274,7 @@ def xisfile(path, use_auth_token: Optional[Union[str, bool]] = None) -> bool:
             storage_options = {"https": http_kwargs}
             path = "::".join([main_hop, url, *rest_hops[1:]])
         else:
-            storage_options = None
+            storage_options = use_auth_token
         fs, *_ = fsspec.get_fs_token_paths(path, storage_options=storage_options)
         return fs.isfile(main_hop)
 
@@ -492,7 +492,7 @@ def xopen(file: str, mode="r", *args, use_auth_token: Optional[Union[str, bool]]
         new_kwargs = {"https": http_kwargs}
         file = "::".join([main_hop, url, *rest_hops[1:]])
     else:
-        new_kwargs = {}
+        new_kwargs = use_auth_token
     kwargs = {**kwargs, **new_kwargs}
     try:
         file_obj = fsspec.open(file, mode=mode, *args, **kwargs).open()
